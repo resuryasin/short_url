@@ -1,0 +1,29 @@
+{
+  "name": "shortener_url",
+  "version": "0.0.1",
+  "description": "Shortener Url Micro Service Node.js on Docker",
+  "author": "resuryasin <672016198@student.uksw.edu>",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "crypto-js": "^4.0.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.16.1",
+    "mongoose": "^6.7.0",
+    "cors": "2.8.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/resuryasin/short_url.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/resuryasin/short_url/issues"
+  },
+  "homepage": "https://github.com/resuryasin/short_url#readme",
+  "devDependencies": {
+    "eslint": "8.26.0"
+  }
+}

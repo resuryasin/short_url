@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Shortener Url</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- responsive mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Shortener Url</h1>                
+                
+                <form method="post"> 
+                    <div class="form-group">
+                        <label for="url">Paste the URL to be shortened:</label>
+                        <input type="text" class="form-control" id="url" name="url">
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+                <hr>
+            
+                <div id="result">
+                    <label for="short_url">Your shortened URL is:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="short_url" value="" readonly>
+                        <button class="btn btn-default" id="copy" data-clipboard-target="#short_url">
+                            <i class="fa fa-clipboard" aria-hidden="true"></i>
+                            Copy
+                        </button>
+                        <button class="btn btn-default" id="redirect">
+                            <i class="fa fa-external-link" aria-hidden="true"></i>
+                            Redirect
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    <script>
+        $(document).ready(function(){
+            $('form').submit(function(e){
+                e.preventDefault();
+                var url = $('#url').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/shorturl',
+                    data: {url: url},
+                    success: function(data){
+                        $('#result').show();
+                        $('#short_url').val(data.short_url);
+                    },
+                });
+            });
+
+            $('#copy').click(function(){
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($("#short_url").val()).select();
+                document.execCommand("copy");
+                $temp.remove();
+                $('#copy').html('<i class="fa fa-check" aria-hidden="true"></i> Copied');
+            });
+
+            $('#redirect').click(function() {
+                window.open($('#short_url').val(), '_blank');
+            });
+        });
+    </script>
+</body>
+</html>
+
+

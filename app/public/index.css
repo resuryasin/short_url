@@ -1,0 +1,38 @@
+/* default body css */
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* responsive for mobile */
+@media (max-width: 767px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* responsive for tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+/* responsive for desktop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* responsive for large desktop */
+@media (min-width: 1200px) {
+  body {
+    font-size: 16px;
+  }
+}

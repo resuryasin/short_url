@@ -1,0 +1,31 @@
+services:
+  web:
+    image: shorturl
+    container_name: shorturl
+    ports:
+      - 10000:8080
+    build: 
+      context: ./app
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    networks:
+      - net
+    links:
+      - database
+  database:
+    image: mongo:4.4.17
+    container_name: shorturl-db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
+    restart: "unless-stopped"
+    networks:
+      - net
+networks:
+  net:
