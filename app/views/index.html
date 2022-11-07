@@ -23,11 +23,11 @@
                 <button class="btn btn-lg btn-outline-danger" type="reset">Clear</button>
             </div>
         </form>
-        <hr>
         <div id="result" class="collapse">
-            <h1 class="h6 mb-3 fw-normal text-center">Your shortened URL</h1>
+            <hr>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="short_url" readonly>
+                <input type="text" class="form-control" id="short_url" placeholder="Your shortened URL" readonly>
+                <label for="short_url">Your shortened URL</label>
             </div>
             <div class="d-grid gap-2 btn-group" role="group">
                 <button class="btn btn-lg btn-outline-success" id="copy" data-clipboard-target="#short_url">
