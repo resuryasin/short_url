@@ -13,6 +13,8 @@ services:
       - net
     links:
       - database
+    restart: "always"
+
   database:
     image: mongo:4.4.17
     container_name: shorturl-db
