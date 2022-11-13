@@ -19,6 +19,9 @@ body {
   z-index: 2;
 }
 
+.toast-container {
+  z-index: 11;
+}
 
 /* responsive for mobile */
 @media (max-width: 767px) {
