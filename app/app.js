@@ -11,65 +11,23 @@ const app = express();
 const cors = require('cors');
 app.use(cors());
 
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+});
+
 // use body-parser
 const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// use crypto-js
-const crypto = require('crypto-js');
-
-const mongoose = require('mongoose');
-
-// mongouri with admin
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-mongoose.connection.once('open', () => {
-  console.log('MongoDB database connection established successfully');
-});
-
-const urlSchema = new mongoose.Schema({
-  original_url: String,
-  short_url: String
-});
-
-const Url = mongoose.model('Url', urlSchema)
-
-function generateShortUrl(url) {
-  const hash = crypto.SHA256(url);
-  const hashString = hash.toString(crypto.enc.Hex);
-  const shortUrl = hashString.slice(0, 8);
-  return shortUrl;
-}
-
-// create saveUrl function, takes in original url and short url then saves to db
-async function saveUrl(originalUrl, shortUrl) {
-  const url = new Url({
-    original_url: originalUrl,
-    short_url: shortUrl
-  });
-  await url.save();
-}
-
-// create getUrl function, takes in short url and returns original url
-async function getUrl(shortUrl) {
-  const url = await Url.findOne({ short_url: shortUrl });
-  return url;
-}
-
-
-// validate url, throw error if invalid
-function validateUrl(url) {
-  const regex = /^(ftp|http|https):\/\/[^ "]+$/;
-  if (regex.test(url)) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 // register public folder
 app.use(express.static('public'));
+
+const Url = require('./models/urls.js');
+
+const { validateUrl, generateShortUrl, saveUrl, getUrl} = require('./modules/urls.js');
 
 // route
 app.get('/', (req, res) => {
