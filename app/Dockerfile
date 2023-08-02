@@ -1,18 +1,24 @@
-FROM node
+FROM node:20.5.0-bullseye-slim
 
-# Create app directory
+# Set up a non-root user (Optional but recommended)
+RUN groupadd -r app && useradd -r -g app -d /usr/src/app app
+
+# Set the working directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package.json .
+COPY package*.json ./
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+# Change ownership of the working directory to the "app" user
+RUN chown -R app:app .
 
-# Bundle app source
+# Switch to the non-root user
+USER app
+
+RUN npm install --production
+
 COPY . .
 
-CMD [ "npm", "start"]
+# Add a health check (Optional but recommended)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD node -e "require('http').get('http://localhost:10000', () => process.exit(0)).on('error', () => process.exit(1))"
+
+CMD [ "npm", "start" ]
