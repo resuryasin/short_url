@@ -1,45 +1,35 @@
-// use strict
 'use strict';
 
 require('dotenv').config();
 
-// create express app
 const express = require('express');
 const app = express();
 
-// cors
 const cors = require('cors');
-app.use(cors());
+const bodyParser = require('body-parser');
+const Url = require('./models/urls.js');
+const { validateUrl, generateShortUrl, saveUrl, getUrl } = require('./modules/urls.js');
 
+// Middleware
+app.use(cors());
 app.disable('x-powered-by');
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   next();
 });
-
-// use body-parser
-const bodyParser = require('body-parser');
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// register public folder
 app.use(express.static('public'));
 
-const Url = require('./models/urls.js');
-
-const { validateUrl, generateShortUrl, saveUrl, getUrl} = require('./modules/urls.js');
-
-// route
+// Home route
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-// create post route
+// Shorten URL route
 app.post('/api/shorturl', async (req, res) => {
   const url = req.body.url;
   if (validateUrl(url)) {
     const shortUrl = generateShortUrl(url);
-    // is shorturl exists in db?
     const urlExists = await Url.findOne({ short_url: shortUrl });
     if (urlExists) {
       res.json({
@@ -50,7 +40,7 @@ app.post('/api/shorturl', async (req, res) => {
       await saveUrl(url, shortUrl);
       res.json({
         original_url: url,
-        short_url: process.env.BASE_URL+shortUrl
+        short_url: process.env.BASE_URL + shortUrl
       });
     }
   } else {
@@ -60,7 +50,7 @@ app.post('/api/shorturl', async (req, res) => {
   }
 });
 
-// create get route
+// Redirect to original URL
 app.get('/:shortUrl', async (req, res) => {
   const shortUrl = req.params.shortUrl;
   try {
@@ -69,13 +59,14 @@ app.get('/:shortUrl', async (req, res) => {
       throw new Error('invalid url');
     }
     return res.redirect(url.original_url);
-  }
-  catch (err) {
-    return res.json({ error: err });
+  } catch (err) {
+    // console.error(err); // Log the error
+    return res.json({ error: 'Invalid URL' });
   }
 });
 
-// listen on port
-app.listen(process.env.PORT, () => {
-  console.log(`Example app listening at http://localhost:${process.env.PORT}`);
+// Set up server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`App running at ${process.env.BASE_URL}`);
 });
